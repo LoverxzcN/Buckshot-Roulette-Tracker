@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buckshot Roulette Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="language-selector">
+            <select id="language-select">
+                <option value="ru">Русский</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <button id="show-tutorial" class="tutorial-button">Как использовать</button>
+        <h1>Buckshot Roulette Tracker</h1>
+
+        <div id="init-section">
+            <h2>Начало игры</h2>
+            <div id="button-input">
+                <h3>Настройка через кнопки</h3>
+                <p class="bullet-limit">Всего патронов: <span id="total-bullet-count">0</span>/10</p>
+                <div class="setup-controls">
+                    <div class="bullet-setup">
+                        <label><img src="live.png" class="icon">Боевых патронов:</label>
+                        <div id="live-bullet-buttons">
+                            <button data-action="increase" data-target="live"><img src="live.png" class="icon">Добавить</button>
+                            <span id="live-bullet-count">4</span>
+                            <button data-action="decrease" data-target="live"><img src="live.png" class="icon">Убрать</button>
+                        </div>
+                    </div>
+
+                    <div class="bullet-setup">
+                        <label><img src="blank.png" class="icon">Холостых патронов:</label>
+                        <div id="blank-bullet-buttons">
+                            <button data-action="increase" data-target="blank"><img src="blank.png" class="icon">Добавить</button>
+                            <span id="blank-bullet-count">4</span>
+                            <button data-action="decrease" data-target="blank"><img src="blank.png" class="icon">Убрать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="start-game">Начать</button>
+        </div>
+
+        <div id="tracker-section" style="display: none;">
+            <div class="game-layout">
+                <div class="game-column">
+                    <h2>Счетчик патронов</h2>
+                    <div id="bullets-display"></div>
+                    <div id="known-sequence">
+                        <h3>Известная последовательность</h3>
+                        <div id="known-bullets-display"></div>
+                    </div>
+                    <div id="shot-buttons">
+                        <button id="live-shot"><img src="live.png" class="icon">Боевой</button>
+                        <button id="blank-shot"><img src="blank.png" class="icon">Холостой</button>
+                    </div>
+                    <p id="chance-display"></p>
+                </div>
+
+                <div class="items-column">
+                    <div class="items-section">
+                        <h3>Предметы</h3>
+                        <div class="items-controls">
+                            <div class="magnifier-controls">
+                                <p>Лупа:</p>
+                                <div class="bullet-type-buttons">
+                                    <button id="set-live-current"><img src="live.png" class="icon">Боевой</button>
+                                    <button id="set-blank-current"><img src="blank.png" class="icon">Холостой</button>
+                                </div>
+                            </div>
+                            
+                            <div class="inverter-controls">
+                                <p>Инвертор:</p>
+                                <button id="invert-current">Инвертировать текущий патрон</button>
+                            </div>
+                            
+                            <div class="phone-controls">
+                                <p>Телефон:</p>
+                                <div class="phone-input">
+                                    <input type="number" id="phone-position" min="1" placeholder="Номер патрона" class="phone-number">
+                                    <div class="bullet-type-buttons">
+                                        <button id="add-phone-live"><img src="live.png" class="icon">Боевой</button>
+                                        <button id="add-phone-blank"><img src="blank.png" class="icon">Холостой</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="phone-predictions">
+                            <h4>Предсказания телефона:</h4>
+                            <ul id="predictions-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-controls">
+                <button id="reset-game">Сбросить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content tutorial">
+            <span class="close-button">&times;</span>
+            <div id="tutorial-ru">
+                <h1>Руководство по использованию Buckshot Roulette Helper</h1>
+                
+                <div class="section">
+                    <h2>Введение</h2>
+                    <p>Этот помощник разработан для игры Buckshot Roulette и помогает отслеживать патроны, их последовательность и вычислять вероятности. Он особенно полезен при использовании предметов, таких как лупа, инвертор и телефон.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Начальный экран</h2>
+                    <p>1. В начале раунда укажите количество патронов:</p>
+                    <ul>
+                        <li>Используйте кнопки "Добавить" и "Убрать" для боевых (красных) патронов</li>
+                        <li>Используйте кнопки "Добавить" и "Убрать" для холостых (синих) патронов</li>
+                        <li>Максимальное общее количество патронов - 10</li>
+                    </ul>
+                    <p>2. Нажмите "Начать" для перехода к основному экрану</p>
+                </div>
+
+                <div class="section">
+                    <h2>Основной экран</h2>
+                    <h3>Счетчик патронов</h3>
+                    <p>В верхней части экрана отображаются:</p>
+                    <ul>
+                        <li>Все патроны в случайном порядке</li>
+                        <li>Известная последовательность патронов (с учетом использования предметов)</li>
+                        <li>Текущий патрон подсвечивается золотым цветом</li>
+                        <li>Инвертированные патроны отмечаются специальным спрайтом inverted.png</li>
+                    </ul>
+
+                    <h3>Кнопки стрельбы</h3>
+                    <ul>
+                        <li>"Боевой" - использовать патрон как боевой</li>
+                        <li>"Холостой" - использовать патрон как холостой</li>
+                        <li>Кнопки блокируются, если соответствующих патронов нет</li>
+                        <li>При инвертированном патроне следует удалять тот тип патрона, который реально вылетел (с учетом инверсии)</li>
+                    </ul>
+
+                    <h3>Предметы</h3>
+                    <p><strong>Лупа:</strong></p>
+                    <ul>
+                        <li>Нажмите "Боевой", если увидели боевой патрон</li>
+                        <li>Нажмите "Холостой", если увидели холостой патрон</li>
+                        <li>Текущий патрон будет отмечен в последовательности</li>
+                    </ul>
+
+                    <p><strong>Инвертор:</strong></p>
+                    <ul>
+                        <li>Нажмите "Инвертировать текущий патрон" при использовании инвертора</li>
+                        <li>Патрон будет отмечен спрайтом inverted.png</li>
+                        <li>Тип патрона изменится на противоположный</li>
+                    </ul>
+
+                    <p><strong>Телефон:</strong></p>
+                    <ul>
+                        <li>Введите номер патрона, который показал телефон</li>
+                        <li>Нажмите "Боевой" или "Холостой" в зависимости от предсказания</li>
+                        <li>Предсказание появится в списке ниже</li>
+                        <li>Можно удалить предсказание, нажав на крестик</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Вероятности и подсказки</h2>
+                    <p>Под кнопками стрельбы отображается:</p>
+                    <ul>
+                        <li>Тип текущего патрона (если известен)</li>
+                        <li>Вероятность боевого/холостого патрона</li>
+                        <li>Рекомендация по стрельбе (в себя/в противника)</li>
+                        <li>Информация об известных будущих патронах</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Дополнительные функции</h2>
+                    <ul>
+                        <li>Кнопка "Сбросить" для начала нового раунда</li>
+                        <li>Переключатель языка (русский/английский)</li>
+                        <li>Автоматическое сохранение состояния игры</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="tip">
+                        <strong>Совет:</strong> Всегда отмечайте использование инвертора, иначе вероятности будут рассчитаны неверно.
+                    </div>
+                    <div class="warning">
+                        <strong>Важно:</strong> При использовании телефона вводите номер патрона, который показал телефон.
+                    </div>
+                </div>
+            </div>
+
+            <div id="tutorial-en" style="display: none;">
+                <h1>Buckshot Roulette Helper Tutorial</h1>
+                
+                <div class="section">
+                    <h2>Introduction</h2>
+                    <p>This helper is designed for Buckshot Roulette game and helps track bullets, their sequence, and calculate probabilities. It's especially useful when using items such as magnifier, inverter, and phone.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Initial Screen</h2>
+                    <p>1. At the start of the round, specify the number of bullets:</p>
+                    <ul>
+                        <li>Use "Add" and "Remove" buttons for live (red) bullets</li>
+                        <li>Use "Add" and "Remove" buttons for blank (blue) bullets</li>
+                        <li>Maximum total number of bullets is 10</li>
+                    </ul>
+                    <p>2. Click "Start" to proceed to the main screen</p>
+                </div>
+
+                <div class="section">
+                    <h2>Main Screen</h2>
+                    <h3>Bullet Counter</h3>
+                    <p>The top section displays:</p>
+                    <ul>
+                        <li>All bullets in random order</li>
+                        <li>Known sequence of bullets (considering item usage)</li>
+                        <li>Current bullet is highlighted in gold</li>
+                        <li>Inverted bullets are marked with inverted.png sprite</li>
+                    </ul>
+
+                    <h3>Shooting Buttons</h3>
+                    <ul>
+                        <li>"Live" - use bullet as live</li>
+                        <li>"Blank" - use bullet as blank</li>
+                        <li>Buttons are disabled if corresponding bullets are not available</li>
+                        <li>When bullet is inverted, you should remove the bullet type that actually came out (considering inversion)</li>
+                    </ul>
+
+                    <h3>Items</h3>
+                    <p><strong>Magnifier:</strong></p>
+                    <ul>
+                        <li>Click "Live" if you saw a live bullet</li>
+                        <li>Click "Blank" if you saw a blank bullet</li>
+                        <li>Current bullet will be marked in the sequence</li>
+                    </ul>
+
+                    <p><strong>Inverter:</strong></p>
+                    <ul>
+                        <li>Click "Invert Current Bullet" when using the inverter</li>
+                        <li>Bullet will be marked with inverted.png sprite</li>
+                        <li>Bullet type will change to the opposite</li>
+                    </ul>
+
+                    <p><strong>Phone:</strong></p>
+                    <ul>
+                        <li>Enter the bullet number that phone showed</li>
+                        <li>Click "Live" or "Blank" depending on the prediction</li>
+                        <li>Prediction will appear in the list below</li>
+                        <li>You can delete prediction by clicking the cross</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Probabilities and Hints</h2>
+                    <p>Below shooting buttons displays:</p>
+                    <ul>
+                        <li>Current bullet type (if known)</li>
+                        <li>Probability of live/blank bullet</li>
+                        <li>Shooting recommendation (shoot self/enemy)</li>
+                        <li>Information about known future bullets</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Additional Features</h2>
+                    <ul>
+                        <li>"Reset" button to start a new round</li>
+                        <li>Language switcher (Russian/English)</li>
+                        <li>Automatic game state saving</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="tip">
+                        <strong>Tip:</strong> Always mark inverter usage, otherwise probabilities will be calculated incorrectly.
+                    </div>
+                    <div class="warning">
+                        <strong>Important:</strong> When using phone, enter the bullet number that phone showed.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
