@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     let currentLanguage = 'en';
-    updateLanguage('en')
 
     function updateLanguage(lang) {
         currentLanguage = lang;
